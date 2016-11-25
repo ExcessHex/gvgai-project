@@ -40,7 +40,7 @@ public class Test {
 	String games[] = new String[] {};
 	String generateLevelPath = "examples/gridphysics/";
 	String generateRulePath = "examples/gridphysics/";
-
+	// Hello, I am a comment
 	// All public games
 	games = new String[] { "aliens", "angelsdemons", "assemblyline", "avoidgeorge", "bait", // 0-4
 		"beltmanager", "blacksmoke", "boloadventures", "bomber", "bomberman", // 5-9
