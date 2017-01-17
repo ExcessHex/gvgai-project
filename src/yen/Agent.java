@@ -1,12 +1,16 @@
 package yen;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Random;
 
+import core.game.Observation;
 import core.game.StateObservation;
 import core.player.AbstractPlayer;
 import ontology.Types;
 import tools.ElapsedCpuTimer;
+import tools.Vector2d;
 
 public class Agent extends AbstractPlayer {
 	
@@ -108,8 +112,12 @@ public class Agent extends AbstractPlayer {
 	    			numShields = resources.get(SHIELD_ID); 
 	    		}
 	    	}
-	    	int xPos = (int) stateObs.getAvatarPosition().x / stateObs.getBlockSize();
-	    	int yPos = (int) stateObs.getAvatarPosition().y / stateObs.getBlockSize();
+	    	
+	    	Vector2d indices = getIndexFromPosition(stateObs);
+	    	int xPos = (int) indices.x;
+	    	int yPos = (int) indices.y;
+	    	
+	    	ArrayList<Observation>[][] grid = getGridAroundPlayer(stateObs);
 	    	
 	    	State s = State.createState(xPos, yPos, numShields);
 	    	
@@ -126,6 +134,43 @@ public class Agent extends AbstractPlayer {
 //	    		System.out.println("State already exists");
 	    	}
 	    	return s;
+	    }
+	    
+	    private Vector2d getIndexFromPosition(StateObservation stateObs) {
+	    	Vector2d avatarPos = stateObs.getAvatarPosition();
+	    	int xPos = (int) avatarPos.x / stateObs.getBlockSize();
+	    	double yPos = (int) avatarPos.y / stateObs.getBlockSize();
+	    	
+	    	return new Vector2d(xPos, yPos);
+	    }
+	    
+	    private ArrayList<Observation>[][] getGridAroundPlayer(StateObservation stateObs) {
+	    	Vector2d indices = getIndexFromPosition(stateObs);
+	    	int xPos = (int) indices.x;
+	    	int yPos = (int) indices.y;
+	    	
+	    	ArrayList<Observation>[][] observations = stateObs.getObservationGrid();
+	    	
+	    	ArrayList<Observation>[][] gridObs = new ArrayList[3][3];
+	    	
+	    	
+	    	int xPosStart = xPos - 1;
+	    	int yPosStart = yPos - 1;
+	    	
+	    	for (int i = 0; i < gridObs.length; i++) {
+	    		for (int j = 0; j < gridObs[i].length; j++) {
+	    			if (xPosStart >= 0 && xPosStart < observations.length &&
+	    				yPosStart >= 0 && yPosStart < observations[i].length) {
+	    				gridObs[i][j] = observations[xPosStart][yPosStart];
+	    				
+	    			}
+	    			yPosStart++;
+	    		}
+	    		yPosStart = yPos - 1;
+	    		xPosStart++;
+	    	}
+	    	
+	    	return (ArrayList<Observation>[][]) gridObs;
 	    }
 	    
 	    private double calculateReward(StateObservation curr, StateObservation next) {
