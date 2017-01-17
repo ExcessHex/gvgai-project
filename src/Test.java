@@ -70,7 +70,9 @@ public class Test {
 	int levelIdx = 2; // level names from 0 to 4 (game_lvlN.txt).
 	String game = gamesPath + games[gameIdx] + ".txt";
 	String level1 = gamesPath + games[gameIdx] + "_lvl" + levelIdx + ".txt";
-
+	String[] levels = new String[1];
+	levels[0] = level1;
+	
 	String recordLevelFile = generateLevelPath + games[gameIdx] + "_glvl.txt";
 	String recordGameFile = generateRulePath + games[gameIdx] + "_ggame.txt";
 	String recordActionsFile = null;// "actions_" + games[gameIdx] + "_lvl"
@@ -82,11 +84,16 @@ public class Test {
 	// ArcadeMachine.playOneGame(game, level1, recordActionsFile, seed);
 
 	// 2. This plays a game in a level by the controller.
-	for (int i = 0; i < 30000; i++){
-		ArcadeMachine.runOneGame(game, level1, visuals, yen,
-		 recordActionsFile, seed, 0);
-	}
+//	for (int i = 0; i < 30000; i++){
+//		ArcadeMachine.runOneGame(game, level1, visuals, yen,
+//		 recordActionsFile, seed, 0);
+//	}
 
+	ArcadeMachine.runGames(game, levels, 1000, yen, null);
+	
+	ArcadeMachine.runOneGame(game, level1, visuals, yen,
+			 recordActionsFile, seed, 0);
+	
 	// 3. This replays a game from an action file previously recorded
 	// String readActionsFile = recordActionsFile;
 	// ArcadeMachine.replayGame(game, level1, visuals, readActionsFile);

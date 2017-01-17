@@ -108,7 +108,7 @@ public class Agent extends AbstractPlayer {
 	    	int numShields = 0;
 	    	
 	    	HashMap<Integer, Integer> resources = stateObs.getAvatarResources();
-	    	if (resources != null) {
+	    	if (!resources.isEmpty()) {
 	    		if (resources.containsKey(SHIELD_ID)){ // get shields
 	    			numShields = resources.get(SHIELD_ID); 
 	    		}
