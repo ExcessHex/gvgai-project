@@ -12,6 +12,18 @@ public class State {
 		this.shields = shields;
 	}
 	
+	public int getShields() {
+		return this.shields;
+	}
+	
+	public int getXPos() {
+		return this.xPos;
+	}
+	
+	public int getYPos() {
+		return this.yPos;
+	}
+	
 	@Override
 	public boolean equals(Object other) {
 		boolean equal = false;

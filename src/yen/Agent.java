@@ -1,6 +1,5 @@
 package yen;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 
@@ -14,20 +13,14 @@ public class Agent extends AbstractPlayer {
 		private final int WIN_REWARD = 100;
 		private final int LOSE_REWARD = -100;
 		private final int ACTION_SIZE = 6;
-		private final int HEALTH_LEVELS = 6;
+		private final int HIT_PENALTY = 5;
 		
 		private final int SHIELD_ID = 11;
 		
-		private static int STATE_SIZE;
-		private static int X_BLOCKS;
-		private static int Y_BLOCKS;
-		
 		private static double greed = 0.9;
 		private static double rewardDiscount = 0.7;
-		private static double qValues[][] = null;
 		// gives the number of times an action was carried out in a state
-//		private static int visited[][] = null;
-		private static HashMap<State, double[]> qVals;
+		private static HashMap<State, double[]> qValues;
 		private static HashMap<State, int[]> visited;
 		private State currentState;
 		
@@ -39,15 +32,8 @@ public class Agent extends AbstractPlayer {
 	    {   
 	    	// init qValues if it's the first run of the game.
 	    	if (qValues == null) {
-	    		X_BLOCKS = so.getWorldDimension().width / so.getBlockSize();
-	    		Y_BLOCKS = so.getWorldDimension().height / so.getBlockSize();
-	    		
-	    		STATE_SIZE = X_BLOCKS * Y_BLOCKS * HEALTH_LEVELS;
-	    		qValues = new double[STATE_SIZE][ACTION_SIZE];
 	    		visited = new HashMap<State, int[]>();
-	    		qVals = new HashMap<State, double[]>();
-	    		
-//	    		visited = new int[STATE_SIZE][ACTION_SIZE];
+	    		qValues = new HashMap<State, double[]>();
 	    	}
 	    	rand = new Random();
 	    	totalReward = 0.0;
@@ -55,15 +41,13 @@ public class Agent extends AbstractPlayer {
 
 	    //Act function. Called every game step, it must return an action in 40 ms maximum.
 	    public Types.ACTIONS act(StateObservation stateObs, ElapsedCpuTimer elapsedTimer) {
-//	    	int currState = stateObsToState(stateObs);
-
 	    	currentState = stateObsToState(stateObs);
 	    	
 	    	double explore = rand.nextDouble();
 	    	if (explore < greed) {  // exploit!
 	    		// find best action to take
 	    		int bestAction = 0; // NOOP
-	    		double values[] = ((double[]) qVals.get(currentState));
+	    		double values[] = ((double[]) qValues.get(currentState));
 	    		double bestOutcome = values[bestAction];
 	    		
 	    		for (int i = 1; i < ACTION_SIZE; i++) {
@@ -85,7 +69,7 @@ public class Agent extends AbstractPlayer {
 	    	StateObservation nextState = stateObs.copy();
 	    	nextState.advance(action);
 	    	int visitedCount[] = visited.get(currentState);
-	    	double stateValues[] = qVals.get(currentState);
+	    	double stateValues[] = qValues.get(currentState);
 	    	
 	    	visitedCount[action.ordinal()]++;
 	    	
@@ -97,14 +81,14 @@ public class Agent extends AbstractPlayer {
 	    	
 	    	stateValues[action.ordinal()] = (1 - alpha) * stateValues[action.ordinal()]
 	    			+ alpha * rewardUpdate;
-	    	qVals.put(currentState, stateValues);
+	    	qValues.put(currentState, stateValues);
 	    	visited.put(currentState, visitedCount);
 	    	return action;
 	    }
 	    
 	    private double getStateValue(StateObservation stateObs) {
 	    	State s = stateObsToState(stateObs);
-	    	double[] values = ((double[]) qVals.get(s));
+	    	double[] values = ((double[]) qValues.get(s));
 	    	double v = values[0];
 	    	for (int i = 1; i < ACTION_SIZE; i++) {
 	    		Types.ACTIONS action = Types.ACTIONS.values()[i];
@@ -129,14 +113,14 @@ public class Agent extends AbstractPlayer {
 	    	
 	    	State s = State.createState(xPos, yPos, numShields);
 	    	
-	    	if (!qVals.containsKey(s)) {
+	    	if (!qValues.containsKey(s)) {
 	    		double vals[] = new double[ACTION_SIZE];
 	    		int visit[] = new int[ACTION_SIZE];
 	    		for(int i =0; i < ACTION_SIZE; i++) {
 	    			vals[i] = 0;
 	    			visit[i] = 0;
 	    		}
-	    		qVals.put(s, vals);
+	    		qValues.put(s, vals);
 	    		visited.put(s, visit);
 	    	} else {
 //	    		System.out.println("State already exists");
@@ -154,8 +138,10 @@ public class Agent extends AbstractPlayer {
 				   return WIN_REWARD;
 			   }
 		   }
+		   State oldState = stateObsToState(curr);
+		   State newState = stateObsToState(next);
 		   // TODO: punish for being hit etc.
-		   
-		   return (next.getGameScore() - curr.getGameScore()) * 20; // teach it to shoot
+		   double hitPenalty = ((newState.getShields() < oldState.getShields()) ? HIT_PENALTY : 0);
+		   return ((next.getGameScore() - curr.getGameScore()) * 20) - hitPenalty; // teach it to shoot
 	   }
 }
