@@ -5,11 +5,13 @@ public class State {
 	private int xPos;
 	private int yPos;
 	private int shields;
+	private int direction;
 	
-	State (int x, int y, int shields) {
+	State (int x, int y, int shields, int direction) {
 		this.xPos = x;
 		this.yPos = y;
 		this.shields = shields;
+		this.direction = direction;
 	}
 	
 	public int getShields() {
@@ -30,6 +32,7 @@ public class State {
 		if (other != null && State.class.isAssignableFrom(other.getClass())) {
 			State s = (State) other;
 			equal = this.shields == s.shields;
+			equal = equal && this.direction == s.direction;
 			equal = equal && this.xPos == s.xPos;
 			equal = equal && this.yPos == s.yPos;
 		}
@@ -39,10 +42,10 @@ public class State {
 	@Override
 	public int hashCode()
 	{
-		return (((xPos * 25 ) + yPos) * 25) + shields; 
+		return (((((xPos * 25 ) + yPos) * 25) + shields) * 6 + direction); 
 	}
 	
-	public static State createState(int x, int y, int shields) {
-		return new State(x, y, shields);
+	public static State createState(int x, int y, int shields, int direction) {
+		return new State(x, y, shields, direction);
 	}
 }

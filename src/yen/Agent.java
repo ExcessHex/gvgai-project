@@ -2,7 +2,7 @@ package yen;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import tools.Vector2d;
 import java.util.Random;
 
 import core.game.Observation;
@@ -116,10 +116,10 @@ public class Agent extends AbstractPlayer {
 	    	Vector2d indices = getIndexFromPosition(stateObs);
 	    	int xPos = (int) indices.x;
 	    	int yPos = (int) indices.y;
-	    	
+	    	int direction = directionFromOrientation(stateObs.getAvatarOrientation());
 	    	ArrayList<Observation>[][] grid = getGridAroundPlayer(stateObs);
 	    	
-	    	State s = State.createState(xPos, yPos, numShields);
+	    	State s = State.createState(xPos, yPos, numShields, direction);
 	    	
 	    	if (!qValues.containsKey(s)) {
 	    		double vals[] = new double[ACTION_SIZE];
@@ -134,6 +134,18 @@ public class Agent extends AbstractPlayer {
 //	    		System.out.println("State already exists");
 	    	}
 	    	return s;
+	    }
+	    
+	    private int directionFromOrientation(Vector2d orientation) {
+	    	int direction = 0; //up
+	    	if (orientation.y > 0) {
+	    		direction = 1; //down
+	    	} else if (orientation.x > 0) {
+	    		direction = 2;
+	    	} else if (orientation.x < 0) { 
+	    		direction = 3;
+	    	}
+	    	return direction;
 	    }
 	    
 	    private Vector2d getIndexFromPosition(StateObservation stateObs) {
