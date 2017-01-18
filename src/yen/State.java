@@ -1,5 +1,6 @@
 package yen;
 
+import java.util.Arrays;
 
 public class State {
 	private int xPos;
@@ -42,7 +43,9 @@ public class State {
 	@Override
 	public int hashCode()
 	{
-		return (((((xPos * 25 ) + yPos) * 25) + shields) * 6 + direction); 
+		//return (((((xPos * 25 ) + yPos) * 25) + shields) * 6 + direction); 
+		Object[] data = {xPos, yPos, shields, direction};
+		return Arrays.hashCode(data);
 	}
 	
 	public static State createState(int x, int y, int shields, int direction) {
