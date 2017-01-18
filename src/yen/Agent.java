@@ -212,6 +212,6 @@ public class Agent extends AbstractPlayer {
 		   // TODO: punish for being hit etc.
 		   double hitPenalty = ((newState.getShields() < oldState.getShields()) ? HIT_PENALTY : 0);
 		   double shieldBonus = ((newState.getShields() > oldState.getShields()) ? SHIELD_REWARD : 0);
-		   return ((next.getGameScore() - curr.getGameScore()) * 20) - hitPenalty + SHIELD_REWARD; // teach it to shoot
+		   return ((next.getGameScore() - curr.getGameScore()) * 20) - hitPenalty + shieldBonus; // teach it to shoot
 	   }
 }
