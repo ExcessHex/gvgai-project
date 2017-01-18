@@ -117,7 +117,7 @@ public class Agent extends AbstractPlayer {
 	    	int xPos = (int) indices.x;
 	    	int yPos = (int) indices.y;
 	    	int direction = directionFromOrientation(stateObs.getAvatarOrientation());
-	    	ArrayList<Observation>[][] grid = getGridAroundPlayer(stateObs);
+	    	ArrayList<Observation>[][] grid = getGridAroundPlayer(stateObs, 5);
 	    	
 	    	State s = State.createState(xPos, yPos, numShields, direction);
 	    	
@@ -156,21 +156,35 @@ public class Agent extends AbstractPlayer {
 	    	return new Vector2d(xPos, yPos);
 	    }
 	    
-	    private ArrayList<Observation>[][] getGridAroundPlayer(StateObservation stateObs) {
+	    /**
+	     * 
+	     * @param stateObs
+	     * @param N - Size of grid radius around player, 1 = 3*3 grid, 2 = 5*5
+	     * 
+	     * N = 1
+	     * [ ][ ][ ]
+	     * [ ][P][ ]
+	     * [ ][ ][ ]
+	     * 
+	     * @return 
+	     */
+	    private ArrayList<Observation>[][] getGridAroundPlayer(StateObservation stateObs, int N) {
 	    	Vector2d indices = getIndexFromPosition(stateObs);
 	    	int xPos = (int) indices.x;
 	    	int yPos = (int) indices.y;
 	    	
 	    	ArrayList<Observation>[][] observations = stateObs.getObservationGrid();
 	    	
-	    	ArrayList<Observation>[][] gridObs = new ArrayList[3][3];
+	    	int dimensions = (int) (Math.pow(2, N) + 1);
 	    	
+	    	ArrayList<Observation>[][] gridObs = new ArrayList[dimensions][dimensions];
 	    	
-	    	int xPosStart = xPos - 1;
-	    	int yPosStart = yPos - 1;
+	    	int xPosStart = xPos - N;
+	    	int yPosStart = yPos - N;
 	    	
 	    	for (int i = 0; i < gridObs.length; i++) {
-	    		for (int j = 0; j < gridObs[i].length; j++) {
+	    		// check that we dont exceed the bounds of the observation grid itself
+	    		for (int j = 0; j < gridObs[i].length && i < observations.length; j++) {		
 	    			if (xPosStart >= 0 && xPosStart < observations.length &&
 	    				yPosStart >= 0 && yPosStart < observations[i].length) {
 	    				gridObs[i][j] = observations[xPosStart][yPosStart];
@@ -178,7 +192,7 @@ public class Agent extends AbstractPlayer {
 	    			}
 	    			yPosStart++;
 	    		}
-	    		yPosStart = yPos - 1;
+	    		yPosStart = yPos - N;
 	    		xPosStart++;
 	    	}
 	    	
