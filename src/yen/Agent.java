@@ -18,6 +18,7 @@ public class Agent extends AbstractPlayer {
 		private final int LOSE_REWARD = -100;
 		private final int ACTION_SIZE = 6;
 		private final int HIT_PENALTY = 5;
+		private final int SHIELD_REWARD = 10;
 		
 		private final int SHIELD_ID = 11;
 		
@@ -210,6 +211,7 @@ public class Agent extends AbstractPlayer {
 		   State newState = stateObsToState(next);
 		   // TODO: punish for being hit etc.
 		   double hitPenalty = ((newState.getShields() < oldState.getShields()) ? HIT_PENALTY : 0);
-		   return ((next.getGameScore() - curr.getGameScore()) * 20) - hitPenalty; // teach it to shoot
+		   double shieldBonus = ((newState.getShields() > oldState.getShields()) ? SHIELD_REWARD : 0);
+		   return ((next.getGameScore() - curr.getGameScore()) * 20) - hitPenalty + SHIELD_REWARD; // teach it to shoot
 	   }
 }
