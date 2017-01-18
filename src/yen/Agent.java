@@ -117,7 +117,7 @@ public class Agent extends AbstractPlayer {
 	    	int xPos = (int) indices.x;
 	    	int yPos = (int) indices.y;
 	    	int direction = directionFromOrientation(stateObs.getAvatarOrientation());
-	    	ArrayList<Observation>[][] grid = getGridAroundPlayer(stateObs, 5);
+	    	ArrayList<Integer>[][] grid = getGridAroundPlayer(stateObs, 5);
 	    	
 	    	State s = State.createState(xPos, yPos, numShields, direction);
 	    	
@@ -168,35 +168,32 @@ public class Agent extends AbstractPlayer {
 	     * 
 	     * @return 
 	     */
-	    private ArrayList<Observation>[][] getGridAroundPlayer(StateObservation stateObs, int N) {
+	    private ArrayList<Integer>[][] getGridAroundPlayer(StateObservation stateObs, int N) {
 	    	Vector2d indices = getIndexFromPosition(stateObs);
 	    	int xPos = (int) indices.x;
 	    	int yPos = (int) indices.y;
 	    	
 	    	ArrayList<Observation>[][] observations = stateObs.getObservationGrid();
 	    	
-	    	int dimensions = (int) (Math.pow(2, N) + 1);
+	    	int dimensions = (2*N) + 1;
 	    	
-	    	ArrayList<Observation>[][] gridObs = new ArrayList[dimensions][dimensions];
+	    	ArrayList<Integer>[][] gridObs = new ArrayList[dimensions][dimensions];
 	    	
-	    	int xPosStart = xPos - N;
-	    	int yPosStart = yPos - N;
-	    	
-	    	for (int i = 0; i < gridObs.length; i++) {
+	    	for (int i = -N; i <= N; i++) {
 	    		// check that we dont exceed the bounds of the observation grid itself
-	    		for (int j = 0; j < gridObs[i].length && i < observations.length; j++) {		
-	    			if (xPosStart >= 0 && xPosStart < observations.length &&
-	    				yPosStart >= 0 && yPosStart < observations[i].length) {
-	    				gridObs[i][j] = observations[xPosStart][yPosStart];
-	    				
+	    		for (int j = -N; j <= N; j++) {		
+	    			if (xPos + i >= 0 && xPos + i < observations.length &&
+	    				yPos + j  >= 0 && yPos + j < observations[i+N].length) {
+	    				ArrayList<Observation> observationList = observations[xPos+i][yPos+j];
+	    				ArrayList<Integer> enemyList = new ArrayList<Integer>();
+	    				for (Observation observation : observationList) {
+	    					enemyList.add(observation.itype);
+	    				}
+	    				gridObs[i+N][j+N] = enemyList;	    				
 	    			}
-	    			yPosStart++;
 	    		}
-	    		yPosStart = yPos - N;
-	    		xPosStart++;
 	    	}
-	    	
-	    	return (ArrayList<Observation>[][]) gridObs;
+	    	return (ArrayList<Integer>[][]) gridObs;
 	    }
 	    
 	    private double calculateReward(StateObservation curr, StateObservation next) {
