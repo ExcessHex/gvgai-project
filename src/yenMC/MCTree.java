@@ -65,11 +65,13 @@ public class MCTree {
 		public static final int WIN_BONUS = 100;
 		public static final int LOSE_PENALTY = 100;
 		int depth;
+		int visitCount;
 		double qValue;
 		Random rng;
 		
 		public MCNode (MCNode parent, StateObservation state, Types.ACTIONS actions[], Random rng)  {
 			qValue = 0;
+			visitCount = 0;
 			this.state = state;
 			this.parent = parent;
 			this.rng = rng;
@@ -130,7 +132,7 @@ public class MCTree {
 		 * @return qValue
 		 */
 		private double qValue() {
-			return qValue;
+			return qValue/visitCount;
 		}
 		
 		private MCNode expandChild() {
@@ -208,6 +210,7 @@ public class MCTree {
 			MCNode current = start;
 			while (current != null) {
 				current.qValue += update;
+				current.visitCount++;
 				current = current.parent;
 			}
 		}
