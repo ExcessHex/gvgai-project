@@ -20,7 +20,10 @@ public class Agent extends AbstractPlayer {
 		private final int HIT_PENALTY = 5;
 		private final int SHIELD_REWARD = 10;
 		
-		private final int SHIELD_ID = 11;
+		public static final int ROCK_MISSILE_ID = 5;
+		public static final int LASER_MISSILE_ID = 7;
+		public static final int SHIELD_ID = 11;
+		public static final int ALIEN_ID = 12;
 		
 		private static double greed = 0.9;
 		private static double rewardDiscount = 0.7;
@@ -114,11 +117,14 @@ public class Agent extends AbstractPlayer {
 	    		}
 	    	}
 	    	
-	    	Vector2d indices = GridUtils.getIndexFromPosition(stateObs);
+	    	GridUtils grid = new GridUtils(stateObs, 1);
+	    	// boolean[] aliens = grid.getAliens();
+	    	
+	    	
+	    	Vector2d indices = grid.getIndexFromPosition(stateObs);
 	    	int xPos = (int) indices.x;
 	    	int yPos = (int) indices.y;
 	    	int direction = directionFromOrientation(stateObs.getAvatarOrientation());
-	    	ArrayList<Integer>[][] grid = GridUtils.getGridAroundPlayer(stateObs, 5);
 	    	
 	    	State s = State.createState(xPos, yPos, numShields, direction);
 	    	

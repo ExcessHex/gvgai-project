@@ -8,11 +8,26 @@ import core.game.StateObservation;
 
 public class GridUtils {
 	
+	private ArrayList<Observation>[][] grid;
+	private boolean[] aliens = new boolean[4];
+	private boolean[] rockMissiles = new boolean[4];
+	private boolean[] laserMissiles = new boolean[4];
+	private boolean[] shields = new boolean[4];
+	
+	
 	public enum Direction {
 		UP, DOWN, RIGHT, LEFT
 	}
 	
-	public static Vector2d getIndexFromPosition(StateObservation stateObs) {
+	public GridUtils(StateObservation stateObs, int n) {
+		this.grid = getGridAroundPlayer(stateObs, n);
+		this.aliens = new boolean[4];
+		this.rockMissiles = new boolean[4];
+		this.laserMissiles = new boolean[4];
+		this.shields = new boolean[4];
+	}
+	
+	public Vector2d getIndexFromPosition(StateObservation stateObs) {
     	Vector2d avatarPos = stateObs.getAvatarPosition();
     	int xPos = (int) avatarPos.x / stateObs.getBlockSize();
     	double yPos = (int) avatarPos.y / stateObs.getBlockSize();
@@ -32,16 +47,17 @@ public class GridUtils {
      * 
      * @return 
      */
-    public static ArrayList<Integer>[][] getGridAroundPlayer(StateObservation stateObs, int N) {
+    private ArrayList<Observation>[][] getGridAroundPlayer(StateObservation stateObs, int N) {
     	Vector2d indices = getIndexFromPosition(stateObs);
     	int xPos = (int) indices.x;
     	int yPos = (int) indices.y;
-    	
+    
     	ArrayList<Observation>[][] observations = stateObs.getObservationGrid();
     	
     	int dimensions = (2*N) + 1;
+    	int playerPosIndex = dimensions / 2;
     	
-    	ArrayList<Integer>[][] gridObs = new ArrayList[dimensions][dimensions];
+    	ArrayList<Observation>[][] gridObs = new ArrayList[dimensions][dimensions];
     	
     	for (int i = -N; i <= N; i++) {
     		// check that we dont exceed the bounds of the observation grid itself
@@ -49,15 +65,71 @@ public class GridUtils {
     			if (xPos + i >= 0 && xPos + i < observations.length &&
     				yPos + j  >= 0 && yPos + j < observations[i+N].length) {
     				ArrayList<Observation> observationList = observations[xPos+i][yPos+j];
-    				ArrayList<Integer> enemyList = new ArrayList<Integer>();
-    				for (Observation observation : observationList) {
-    					enemyList.add(observation.itype);
+    				ArrayList<Observation> observationPerSquare = (ArrayList<Observation>) observationList.clone();
+    				
+    				gridObs[i+N][j+N] = observationPerSquare;
+    				
+    				if (!observationList.isEmpty()) {
+    					setDirectionObservations(observationPerSquare, j+N, i+N, playerPosIndex);
     				}
-    				gridObs[i+N][j+N] = enemyList;	    				
     			}
     		}
     	}
-    	return (ArrayList<Integer>[][]) gridObs;
+    	
+    	return (ArrayList<Observation>[][]) gridObs;
+    }
+   
+    private void setDirectionObservations(ArrayList<Observation> observationList, int idx1, int idx2, int playerPos) {
+    	if (idx1 < playerPos && idx2 >= playerPos) {
+			setObservations(observationList, Direction.UP);
+		}
+		else if (idx1 > playerPos && idx2 >= playerPos) {
+			setObservations(observationList, Direction.DOWN);
+		}
+		else if (idx1 == playerPos && idx2 < playerPos) {
+			setObservations(observationList, Direction.LEFT);
+		}
+		else if (idx1 == playerPos && idx2 > playerPos) {
+			setObservations(observationList, Direction.RIGHT);
+		}
+    }
+    
+    private void setObservations(ArrayList<Observation> observationList, Direction dir) {
+    	for (Observation obs: observationList) {
+			switch(obs.itype) {
+				case Agent.ROCK_MISSILE_ID:
+					rockMissiles[dir.ordinal()] = true;
+					break;
+				case Agent.LASER_MISSILE_ID:
+					laserMissiles[dir.ordinal()] = true;
+					break;
+				case Agent.ALIEN_ID:
+					aliens[dir.ordinal()] = true;
+					break;
+				case Agent.SHIELD_ID:
+					shields[dir.ordinal()] = true;
+					break;
+			}
+		}
     }
 
+	public ArrayList<Observation>[][] getGrid() {
+		return grid;
+	}
+
+	public boolean[] getAliens() {
+		return aliens;
+	}
+
+	public boolean[] getRockMissiles() {
+		return rockMissiles;
+	}
+
+	public boolean[] getLaserMissiles() {
+		return laserMissiles;
+	}
+
+	public boolean[] getShields() {
+		return shields;
+	}
 }
