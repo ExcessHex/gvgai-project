@@ -75,6 +75,7 @@ public class GridUtils {
     			}
     		}
     	}
+    	
     	return (ArrayList<Observation>[][]) gridObs;
     }
    
