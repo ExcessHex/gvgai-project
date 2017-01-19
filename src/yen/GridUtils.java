@@ -132,5 +132,4 @@ public class GridUtils {
 	public boolean[] getShields() {
 		return shields;
 	}
-    
 }
