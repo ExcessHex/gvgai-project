@@ -6,7 +6,12 @@ import tools.Vector2d;
 import core.game.Observation;
 import core.game.StateObservation;
 
-public class GridUtils {	
+public class GridUtils {
+	
+	public enum Direction {
+		UP, DOWN, RIGHT, LEFT
+	}
+	
 	public static Vector2d getIndexFromPosition(StateObservation stateObs) {
     	Vector2d avatarPos = stateObs.getAvatarPosition();
     	int xPos = (int) avatarPos.x / stateObs.getBlockSize();
