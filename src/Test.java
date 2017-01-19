@@ -84,15 +84,15 @@ public class Test {
 	// ArcadeMachine.playOneGame(game, level1, recordActionsFile, seed);
 
 	// 2. This plays a game in a level by the controller.
-//	for (int i = 0; i < 30000; i++){
-//		ArcadeMachine.runOneGame(game, level1, visuals, yen,
-//		 recordActionsFile, seed, 0);
-//	}
+	for (int i = 0; i < 30000; i++){
+		ArcadeMachine.runOneGame(game, level1, visuals, yen,
+		 recordActionsFile, seed, 0);
+	}
 
-	ArcadeMachine.runGames(game, levels, 1000, yen, null);
-	
-	ArcadeMachine.runOneGame(game, level1, visuals, yen,
-			 recordActionsFile, seed, 0);
+//	ArcadeMachine.runGames(game, levels, 1000, yen, null);
+//	
+//	ArcadeMachine.runOneGame(game, level1, visuals, yen,
+//			 recordActionsFile, seed, 0);
 	
 	// 3. This replays a game from an action file previously recorded
 	// String readActionsFile = recordActionsFile;
