@@ -1,5 +1,7 @@
 import java.util.Random;
 
+import org.jfree.ui.RefineryUtilities;
+
 import core.ArcadeMachine;
 import core.VGDLFactory;
 import core.VGDLParser;
@@ -7,6 +9,7 @@ import core.VGDLRegistry;
 import core.game.Game;
 import core.game.SLDescription;
 import tools.IO;
+import yenMC.Chart;
 
 /**
  * Created with IntelliJ IDEA. User: Diego Date: 04/10/13 Time: 16:29 This is a
@@ -85,13 +88,31 @@ public class Test {
 	// ArcadeMachine.playOneGame(game, level1, recordActionsFile, seed);
 
 	// 2. This plays a game in a level by the controller.
-	for (int i = 0; i < 30000; i++){
-		ArcadeMachine.runOneGame(game, level1, visuals, yen,
-		 recordActionsFile, seed, 0);
+//	for (int i = 0; i < 30000; i++){
+//		ArcadeMachine.runOneGame(game, level1, visuals, yenMc,
+//		 recordActionsFile, seed, 0);
+//	}
+	
+	
+	ArcadeMachine.runGames(game, levels, 2, yenMc, null);
+	Chart mdpScore= new Chart("Scores Chart", "Scores Chart", "Average Score", "ParamX", Chart.Options.MCTS_SCORE); 
+	mdpScore.setSize( 560 , 367 );    
+	RefineryUtilities.centerFrameOnScreen( mdpScore );    
+	mdpScore.setVisible( true ); 
+		
+	/*
+	for (int i = 0; i < numRuns; i++) {
+		MCNode.setParams(win[i], DEFAULT_LOSE, DEFAULT_SHIELD, DEFAULT_DEPTH);
+		ArcadeMachine.runGames(game, levels, 500, yenMc, null);
+		Chart mdpScore = new Chart("Scores Chart", "Scores Chart", "Average Score", "ParamX", Chart.Options.MDP_SCORE);
+		// options as above
 	}
-
-//	ArcadeMachine.runGames(game, levels, 1000, yen, null);
+	
+	*/
+	
 //	
+	
+	
 //	ArcadeMachine.runOneGame(game, level1, visuals, yen,
 //			 recordActionsFile, seed, 0);
 	
