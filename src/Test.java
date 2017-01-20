@@ -1,12 +1,7 @@
 import java.util.Random;
 
 import core.ArcadeMachine;
-import core.VGDLFactory;
-import core.VGDLParser;
-import core.VGDLRegistry;
-import core.game.Game;
-import core.game.SLDescription;
-import tools.IO;
+import yenMC.MCNode;
 
 /**
  * Created with IntelliJ IDEA. User: Diego Date: 04/10/13 Time: 16:29 This is a
@@ -61,7 +56,15 @@ public class Test {
 		"tercio", "thecitadel", "thesnowman", "waitforbreakfast", "watergame", // 80-84
 		"waves", "whackamole", "wildgunman", "witnessprotection", "wrapsokoban", // 85-89
 		"zelda", "zenpuzzle" }; // 90, 91
-
+	int numRuns = 4;
+	int win[] = { 0, 10, 100, 200 };
+	int shields[] = {0, 5, 10, 20 };
+	int depth[] = { 2, 4, 8, 16 };
+	int DEFAULT_SHIELD = 0;
+	int DEFAULT_WIN = 100;
+	int DEFAULT_LOSE = -100;
+	int DEFAULT_DEPTH = 8;
+	
 	// Other settings
 	boolean visuals = true;
 	int seed = new Random().nextInt();
@@ -84,13 +87,16 @@ public class Test {
 	// 1. This starts a game, in a level, played by a human.
 	// ArcadeMachine.playOneGame(game, level1, recordActionsFile, seed);
 
-	// 2. This plays a game in a level by the controller.
-	for (int i = 0; i < 30000; i++){
-		ArcadeMachine.runOneGame(game, level1, visuals, yen,
-		 recordActionsFile, seed, 0);
-	}
 
-//	ArcadeMachine.runGames(game, levels, 1000, yen, null);
+	ArcadeMachine.runGames(game, levels, 1000, yenMc, null);
+	/*
+	for (int i = 0; i < numRuns; i++) {
+		MCNode.setParams(win[i], DEFAULT_LOSE, DEFAULT_SHIELD, DEFAULT_DEPTH);
+		ArcadeMachine.runGames(game, levels, 500, yenMc, null);
+		
+	}
+	//print stats
+	*/
 //	
 //	ArcadeMachine.runOneGame(game, level1, visuals, yen,
 //			 recordActionsFile, seed, 0);
