@@ -26,6 +26,7 @@ public class Test {
 	String sampleOLETSController = "controllers.singlePlayer.olets.Agent";
 	String repeatOLETS = "controllers.singlePlayer.repeatOLETS.Agent";
 	String yen = "yen.Agent";
+	String yenMc = "yenMC.Agent";
 	
 	// Available Level Generators
 	String randomLevelGenerator = "levelGenerators.randomLevelGenerator.LevelGenerator";
@@ -67,7 +68,7 @@ public class Test {
 
 	// Game and level to play
 	int gameIdx = 85; 
-	int levelIdx = 2; // level names from 0 to 4 (game_lvlN.txt).
+	int levelIdx = 0; // level names from 0 to 4 (game_lvlN.txt).
 	String game = gamesPath + games[gameIdx] + ".txt";
 	String level1 = gamesPath + games[gameIdx] + "_lvl" + levelIdx + ".txt";
 	String[] levels = new String[1];

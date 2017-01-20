@@ -19,6 +19,11 @@ public class Agent extends AbstractPlayer {
 		private final int ACTION_SIZE = 6;
 		private final int HIT_PENALTY = 5;
 		private final int SHIELD_REWARD = 10;
+
+		public static final int ROCK_MISSILE_ID = 5;
+		public static final int LASER_MISSILE_ID = 7;
+		public static final int SHIELD_ID = 11;
+		public static final int ALIEN_ID = 12;
 		
 		private static double greed = 0.9;
 		private static double rewardDiscount = 0.7;
@@ -112,7 +117,7 @@ public class Agent extends AbstractPlayer {
 	    	}
 	    	return v;
 	    }
-	      
+
 	    private double calculateReward(StateObservation curr, StateObservation next) {
 		   if (next.isGameOver()) {
 			   System.out.println("End game reward: " + totalReward);
