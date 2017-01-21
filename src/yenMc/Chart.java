@@ -50,8 +50,8 @@ public class Chart extends ApplicationFrame {
 		ArrayList<StatSummary> statSumms = Statistics.getScoreStats();
 
 		for (int i = 0; i < statSumms.size(); i++) {
-			double mean = statSumms.get(i).sd();
-			this.mctsScoresData.addValue(mean, "Param " + param + " avg. score" , "Param " + param); 
+			double sd = statSumms.get(i).sd();
+			this.mctsSdData.addValue(sd, "Param " + param + " sd" , "Param " + param); 
 		}
 	}
 	
