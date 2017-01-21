@@ -1,3 +1,5 @@
+import java.io.FileNotFoundException;
+import java.io.UnsupportedEncodingException;
 import java.util.Random;
 
 import org.jfree.ui.RefineryUtilities;
@@ -9,6 +11,7 @@ import core.VGDLRegistry;
 import core.game.Game;
 import core.game.SLDescription;
 import tools.IO;
+import yen.*;
 import yenMC.Chart;
 import yenMC.MCNode;
 
@@ -18,7 +21,7 @@ import yenMC.MCNode;
  */
 public class Test {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws FileNotFoundException, UnsupportedEncodingException {
 	// Available controllers:
 	String sampleRandomController = "controllers.singlePlayer.sampleRandom.Agent";
 	String doNothingController = "controllers.singlePlayer.doNothing.Agent";
@@ -104,8 +107,9 @@ public class Test {
 //	}
 	
 	
-	ArcadeMachine.runGames(game, levels, 2, yenMc, null);
-	Chart mdpScore= new Chart("Scores Chart", "Scores Chart", "Average Score", "ParamX", Chart.Options.MCTS_SCORE); 
+	ArcadeMachine.runGames(game, levels, 20, yen, null);
+	Agent.writeQVals();
+	Chart mdpScore= new Chart("Scores Chart", "Scores Chart", "Run #", "Score", Chart.Options.MDP_SCORE); 
 	mdpScore.setSize( 560 , 367 );    
 	RefineryUtilities.centerFrameOnScreen( mdpScore );    
 	mdpScore.setVisible( true ); 

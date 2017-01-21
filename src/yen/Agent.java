@@ -1,16 +1,19 @@
 package yen;
 
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import tools.Vector2d;
+import java.util.Iterator;
+import java.util.Map.Entry;
+
 import java.util.Random;
 
-import core.game.Observation;
 import core.game.StateObservation;
 import core.player.AbstractPlayer;
 import ontology.Types;
 import tools.ElapsedCpuTimer;
-import tools.Vector2d;
 
 public class Agent extends AbstractPlayer {
 	
@@ -35,17 +38,21 @@ public class Agent extends AbstractPlayer {
 		private Random rand;
 		private double totalReward;
 		
+		private boolean learning = true;
+		
 	    //Constructor. It must return in 1 second maximum.
 	    public Agent(StateObservation so, ElapsedCpuTimer elapsedTimer)
 	    {   
-	    	// init qValues if it's the first run of the game.
-	    	if (qValues == null) {
-	    		visited = new HashMap<Integer, int[]>();
-	    		qValues = new HashMap<Integer, double[]>();
+	    	if (learning) {
+		    	// init qValues if it's the first run of the game.
+		    	if (qValues == null) {
+		    		visited = new HashMap<Integer, int[]>();
+		    		qValues = new HashMap<Integer, double[]>();
+		    	}
+		    	
+		    	rand = new Random();
+		    	totalReward = 0.0;
 	    	}
-	    	
-	    	rand = new Random();
-	    	totalReward = 0.0;
 	    }
 
 	    //Act function. Called every game step, it must return an action in 40 ms maximum.
@@ -54,30 +61,18 @@ public class Agent extends AbstractPlayer {
 	    	// if the current state is a state that has not been seen before.
 	    	currentState = StateUtil.getStateFromStateObs(stateObs);
 	    	addState(currentState);
-	    	
-	    	ArrayList<Types.ACTIONS> actions  = stateObs.getAvailableActions();
-	    	
-	    	//TODO: change from iterating over all values to iterating over available actions.
-	    	double explore = rand.nextDouble();
-	    	if (explore < greed) {  // exploit!
-	    		// find best action to take
-	    		int bestAction = actions.get(0).ordinal();
-	    		double values[] = ((double[]) qValues.get(currentState));
-	    		double bestOutcome = values[bestAction];
-	    	
-	    		for (int i = 0; i < actions.size(); i++) {
-	    			Types.ACTIONS action = actions.get(i);
-	    			if (values[action.ordinal()] > bestOutcome) {
-	    				bestAction = action.ordinal();
-	    				bestOutcome = values[action.ordinal()];
-	    			}
-	    		}
-	    		
-	    		return performAction(stateObs, Types.ACTIONS.values()[bestAction]);
+	    	if (learning) {
+		    	double explore = rand.nextDouble();
+		    	if (explore < greed) {  // exploit!
+		    		// find best action to take
+		    		return performAction(stateObs, pickAction(stateObs.getAvailableActions(), currentState));
+		    	}
+		    	//  else pick a random action!
+		    	
+		    	return performAction(stateObs, Types.ACTIONS.values()[rand.nextInt(ACTION_SIZE)]);
 	    	}
-	    	//  else pick a random action!
 	    	
-	    	return performAction(stateObs, Types.ACTIONS.values()[rand.nextInt(ACTION_SIZE)]);
+	    	return performAction(stateObs, pickAction(stateObs.getAvailableActions(), currentState));
 	    }
 	    
 	    private Types.ACTIONS performAction(StateObservation stateObs, Types.ACTIONS action) {	    	
@@ -117,6 +112,41 @@ public class Agent extends AbstractPlayer {
 	    	}
 	    	return v;
 	    }
+	    
+	    public static Types.ACTIONS pickAction(ArrayList<Types.ACTIONS> actions, int currentState) {
+	    	int bestAction = actions.get(0).ordinal();
+    		double values[] = ((double[]) qValues.get(currentState));
+    		double bestOutcome = values[bestAction];
+    	
+    		for (int i = 0; i < actions.size(); i++) {
+    			Types.ACTIONS action = actions.get(i);
+    			if (values[action.ordinal()] > bestOutcome) {
+    				bestAction = action.ordinal();
+    				bestOutcome = values[action.ordinal()];
+    			}
+    		}
+    		return Types.ACTIONS.values()[bestAction];
+	    }
+	    
+	    public static void writeQVals() throws FileNotFoundException, UnsupportedEncodingException {
+	    	   PrintWriter writer = new PrintWriter("q_values.txt", "UTF-8");
+	    	   Iterator<Entry<Integer, double[]>> itr = qValues.entrySet().iterator();
+	    	   while (itr.hasNext()) {
+	    		   Entry<Integer, double[]> e = itr.next();
+	    		   StringBuffer b = new StringBuffer();
+	    		   b.append(e.getKey() + ":");
+	    		   
+	    		   for (double val : e.getValue()) {
+	    			   b.append(val + ",");
+	    		   }
+	    		   writer.println(b.toString());
+	    	   }
+	    	   writer.close();
+	    }
+	    
+	    public static void loadQVals() {
+	    	
+	    }
 
 	    private double calculateReward(StateObservation curr, StateObservation next) {
 		   if (next.isGameOver()) {
@@ -129,7 +159,6 @@ public class Agent extends AbstractPlayer {
 			   }
 		   }
 
-		   // TODO: punish for being hit etc.
 		   double hitPenalty = ((StateUtil.getShields(next) < StateUtil.getShields(curr)) ? HIT_PENALTY : 0);
 		   double shieldBonus = ((StateUtil.getShields(next) > StateUtil.getShields(curr)) ? SHIELD_REWARD : 0);
 		   return ((next.getGameScore() - curr.getGameScore()) * 20) - hitPenalty + shieldBonus; // teach it to shoot
@@ -142,8 +171,6 @@ public class Agent extends AbstractPlayer {
 
 	    		qValues.put(state, vals);
 	    		visited.put(state, visit);
-	    	} else {
-//	    		System.out.println("State already exists");
 	    	}
 		}
 }
