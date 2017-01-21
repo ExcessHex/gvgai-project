@@ -17,6 +17,9 @@ import tools.StatSummary;
 
 public class Chart extends ApplicationFrame {	
 
+	private DefaultCategoryDataset mctsScoresData = new DefaultCategoryDataset();
+	private DefaultCategoryDataset mdpScoresData = new DefaultCategoryDataset();
+	
 	public enum Options {
 		MDP_SCORE, MDP_WINS, MCTS_SCORE, MCTS_SHIELDS
 	}
@@ -26,42 +29,24 @@ public class Chart extends ApplicationFrame {
 		setContentPane(createPanel(chartTitle, xaxisTitle, yaxisTitle, choice));  
 	}
 
-	private static DefaultCategoryDataset createDataset() {
-		DefaultCategoryDataset dataset = new DefaultCategoryDataset( );
+	public void updateDatasetForScoreMDP() {
 		ArrayList<Double> scores = Statistics.getScores();
 
 		for (int i = 0; i < scores.size(); i++) {
-			dataset.addValue(scores.get(i), "Runs " , new Integer(i)); 
-		}
-
-		return dataset;         
+			this.mdpScoresData.addValue(scores.get(i), "Average Score" , "Run: " + (i+1)); 
+		}        
 	}
 
-	private static DefaultCategoryDataset createDatasetForScoreMDP() {
-		DefaultCategoryDataset dataset = new DefaultCategoryDataset( );
-		ArrayList<Double> scores = Statistics.getScores();
-
-		for (int i = 0; i < scores.size(); i++) {
-			dataset.addValue(scores.get(i), "Runs " , new Integer(i)); 
-		}
-
-		return dataset;         
-	}
-
-	private static DefaultCategoryDataset createDatasetForScoreMCTS(String param) {
-		DefaultCategoryDataset dataset = new DefaultCategoryDataset( );
+	public void updateDatasetForScoreMCTS(String param) {
 		ArrayList<StatSummary> statSumms = Statistics.getScoreStats();
 
 		for (int i = 0; i < statSumms.size(); i++) {
 			double mean = statSumms.get(i).mean();
-			System.out.println("MEAN WITH PARAM " + param + ": " + mean);
-			dataset.addValue(mean, "Param " + param , new Integer(i)); 
+			this.mctsScoresData.addValue(mean, "Param " + param + " avg. score" , "Param " + param); 
 		}
-
-		return dataset;         
 	}
 	
-	private static JFreeChart createChart( DefaultCategoryDataset data, String title, String xaxisTitle, String yaxisTitle) {
+	private JFreeChart createLineChart( DefaultCategoryDataset data, String title, String xaxisTitle, String yaxisTitle) {
 		JFreeChart chart = ChartFactory.createLineChart(      
 			title, xaxisTitle, yaxisTitle, data, PlotOrientation.VERTICAL, true, true, false
 		);
@@ -69,20 +54,29 @@ public class Chart extends ApplicationFrame {
 		return chart;
 	}
 	
-	public static JPanel createPanel(String title, String xaxisTitle, String yaxisTitle, Options choice) {
+	private JFreeChart createBarChart( DefaultCategoryDataset data, String title, String xaxisTitle, String yaxisTitle) {
+		JFreeChart chart = ChartFactory.createBarChart(      
+			title, xaxisTitle, yaxisTitle, data, PlotOrientation.VERTICAL, true, true, false
+		);
+
+		return chart;
+	}
+		
+	public JPanel createPanel(String title, String xaxisTitle, String yaxisTitle, Options choice) {
 		JFreeChart chart = null;
 		switch(choice) {
 			case MDP_SCORE:
-				chart = createChart(createDatasetForScoreMDP(), title, xaxisTitle, yaxisTitle); 
+				chart = createLineChart(this.mdpScoresData, title, xaxisTitle, yaxisTitle); 
 				break;
 			case MCTS_SCORE:
-				chart = createChart(createDatasetForScoreMCTS("SHIELDS"), title, xaxisTitle, yaxisTitle); 
+				chart = createBarChart(this.mctsScoresData, title, xaxisTitle, yaxisTitle); 
 				break;
 			default:
 				break;
 		}
 		  
-		return new ChartPanel( chart ); 
+		ChartPanel panel = new ChartPanel( chart ); 		
+		return panel;
 	}
 
 }

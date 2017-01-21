@@ -74,7 +74,7 @@ public class Test {
 	int depth[] = { 2, 4, 8, 16 };
 	int DEFAULT_SHIELD = 0;
 	int DEFAULT_WIN = 100;
-	int DEFAULT_LOSE = -100;
+	int DEFAULT_LOSE = 100;
 	int DEFAULT_DEPTH = 8;
 	
 	// Other settings
@@ -107,22 +107,28 @@ public class Test {
 //	}
 	
 	
-	ArcadeMachine.runGames(game, levels, 20, yen, null);
+	Chart mdpScore = new Chart("MDP Scores over Time", "MDP Scores over Time", "Runs", "Score", Chart.Options.MDP_SCORE); 
+	ArcadeMachine.runGames(game, levels, 2, yen, null);
 	Agent.writeQVals();
-	Chart mdpScore= new Chart("Scores Chart", "Scores Chart", "Run #", "Score", Chart.Options.MDP_SCORE); 
-	mdpScore.setSize( 560 , 367 );    
-	RefineryUtilities.centerFrameOnScreen( mdpScore );    
+	mdpScore.updateDatasetForScoreMDP();
+	mdpScore.setSize( 560 , 367 );      
+
 	mdpScore.setVisible( true ); 
-		
-	/*
+	
+//	ArcadeMachine.runGames(game, levels, 2, yenMc, null);
+	 
+	Chart mctsScore = new Chart("MCTS Average Scores", "MCTS Average Scores", "Different Params", "Average Score", Chart.Options.MCTS_SCORE);
 	for (int i = 0; i < numRuns; i++) {
-		MCNode.setParams(win[i], DEFAULT_LOSE, DEFAULT_SHIELD, DEFAULT_DEPTH);
-		ArcadeMachine.runGames(game, levels, 500, yenMc, null);
-		Chart mdpScore = new Chart("Scores Chart", "Scores Chart", "Average Score", "ParamX", Chart.Options.MDP_SCORE);
-		// options as above
+		MCNode.setParams(DEFAULT_WIN, DEFAULT_LOSE, DEFAULT_SHIELD, DEFAULT_DEPTH);
+		ArcadeMachine.runGames(game, levels, 2, yenMc, null);
+//		ArcadeMachine.runOneGame(game, level1, visuals, yenMc,
+//				 recordActionsFile, seed, 0);
+		
+		mctsScore.updateDatasetForScoreMCTS("DEFAULT " + i);
+		mctsScore.setSize( 560 , 367 );      
+		mctsScore.setVisible( true ); 
 	}
 	
-	*/
 	
 	
 //	ArcadeMachine.runOneGame(game, level1, visuals, yen,

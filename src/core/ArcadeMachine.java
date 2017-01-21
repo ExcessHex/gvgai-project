@@ -704,8 +704,9 @@ public class ArcadeMachine {
 
 			levelIdx++;
 		}
-		
-		Statistics.addScoreStats(scores[0]);
+
+		if (agentName.equals("yenMC.Agent") )
+			Statistics.addScoreStats(scores[0]);
 
 		String vict = "", sc = "";
 		for (int i = 0; i < toPlay.no_players; i++) {
