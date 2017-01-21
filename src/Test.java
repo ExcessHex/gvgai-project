@@ -104,15 +104,16 @@ public class Test {
 //	}
 	
 	
-	Chart mdpScore = new Chart("MDP Scores over Time", "MDP Scores over Time", "Runs", "Score", Chart.Options.MDP_SCORE); 
-	ArcadeMachine.runGames(game, levels, 2, yen, null);
-	mdpScore.updateDatasetForScoreMDP();
-	mdpScore.setSize( 560 , 367 );      
-	mdpScore.setVisible( true ); 
+//	Chart mdpScore = new Chart("MDP Scores over Time", "MDP Scores over Time", "Runs", "Score", Chart.Options.MDP_SCORE); 
+//	ArcadeMachine.runGames(game, levels, 2, yen, null);
+//	mdpScore.updateDatasetForScoreMDP();
+//	mdpScore.setSize( 560 , 367 );      
+//	mdpScore.setVisible( true ); 
 	
 //	ArcadeMachine.runGames(game, levels, 2, yenMc, null);
 	 
 	Chart mctsScore = new Chart("MCTS Average Scores", "MCTS Average Scores", "Different Params", "Average Score", Chart.Options.MCTS_SCORE);
+	Chart mctsSd = new Chart("MCTS SD Score", "MCTS SD Score", "Different Params", "Standard Deviation", Chart.Options.MCTS_SD);
 	for (int i = 0; i < numRuns; i++) {
 		MCNode.setParams(DEFAULT_WIN, DEFAULT_LOSE, DEFAULT_SHIELD, DEFAULT_DEPTH);
 		ArcadeMachine.runGames(game, levels, 2, yenMc, null);
@@ -120,8 +121,11 @@ public class Test {
 //				 recordActionsFile, seed, 0);
 		
 		mctsScore.updateDatasetForScoreMCTS("DEFAULT " + i);
+		mctsSd.updateDatasetForSdMCTS("DEFAULT " + i);
 		mctsScore.setSize( 560 , 367 );      
 		mctsScore.setVisible( true ); 
+		mctsSd.setSize( 560 , 367 );      
+		mctsSd.setVisible( true ); 
 	}
 	
 	
