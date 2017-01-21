@@ -7,6 +7,8 @@ import java.util.*;
 
 import javax.swing.JOptionPane;
 
+import org.jfree.ui.RefineryUtilities;
+
 import core.SpriteGroup;
 import core.VGDLFactory;
 import core.VGDLRegistry;
@@ -29,6 +31,7 @@ import ontology.sprites.Resource;
 import tools.*;
 import tools.pathfinder.Node;
 import tools.pathfinder.PathFinder;
+import yenMC.Chart;
 
 /**
  * Created with IntelliJ IDEA. User: Diego Date: 17/10/13 Time: 13:42 This is a
@@ -1081,7 +1084,7 @@ public abstract class Game {
 	}
 
 	// Prints the result: score, time and winner.
-	// printResult();
+	 printResult();
 
 	double[] scores = new double[no_players];
 	for (int i = 0; i < no_players; i++) {
@@ -1118,6 +1121,7 @@ public abstract class Game {
 	    sb2 += "Player" + i + "-Score:" + avatars[i].getScore() + ", ";
 	}
 
+	
 	System.out.println("Result (1->win; 0->lose): " + sb1 + sb2 + "timesteps:" + this.getGameTick());
 	// System.out.println("Result (1->win; 0->lose):"+ winner.key() + ",
 	// Score:" + score + ", timesteps:" + this.getGameTick());
