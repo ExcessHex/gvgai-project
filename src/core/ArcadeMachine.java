@@ -692,6 +692,9 @@ public class ArcadeMachine {
 						int id = player.getPlayerID();
 						playerid = id;
 						scores[id].add(score[id]);
+						if (toPlay.getWinner(id) == Types.WINNER.PLAYER_WINS) {
+							scores[id].addWin();
+						}
 						victories[id].add(toPlay.getWinner(id) == Types.WINNER.PLAYER_WINS ? 1 : 0);
 					}
 
@@ -718,10 +721,10 @@ public class ArcadeMachine {
 			}
 		}
 
-		for (int i = 0; i < victories.length; i++) {
-			System.out.println("I: " + i);
-			System.out.println(victories[i]);
-		}
+//		for (int i = 0; i < victories.length; i++) {
+//			System.out.println("I: " + i);
+//			System.out.println(victories[i]);
+//		}
 
 		System.out.println("Results in game " + game_file + ", " + vict + " | " + sc
 				+ "," + performance.mean());
