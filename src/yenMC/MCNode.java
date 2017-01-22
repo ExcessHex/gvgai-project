@@ -1,6 +1,7 @@
 package yenMC;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Random;
 
 import core.game.StateObservation;
@@ -12,6 +13,7 @@ public class MCNode {
 	MCNode parent;
 	MCNode children[];
 	Types.ACTIONS availableActions[];
+	public static final int SHIELD_INDEX = 11;
 	public static double EPSILON = 0.05;
 	public static int MAX_DEPTH = 8;
 	public static int WIN_BONUS = 100;
@@ -151,6 +153,10 @@ public class MCNode {
 			} else {
 				value -= LOSE_PENALTY;
 			}
+		}
+		HashMap<Integer, Integer> resources = s.getAvatarResources();
+		if (resources.containsKey(SHIELD_INDEX)) {
+			value += resources.get(SHIELD_INDEX) * SHIELD_BONUS;
 		}
 		return value;
 	}

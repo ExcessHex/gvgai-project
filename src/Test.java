@@ -106,8 +106,6 @@ public class Test {
 //		 recordActionsFile, seed, 0);
 //	}
 	
-	
-
 	Chart mdpScore = new Chart("MDP Scores over Time", "MDP Scores over Time", "Runs", "Score", Chart.Options.MDP_SCORE); 
 	ArcadeMachine.runGames(game, levels, 2, yen, null);
 	Agent.writeQVals();
@@ -117,18 +115,22 @@ public class Test {
 	
 //	ArcadeMachine.runGames(game, levels, 2, yenMc, null);
 	 
-	Chart mctsScore = new Chart("MCTS Average Scores", "MCTS Average Scores", "Different Params", "Average Score", Chart.Options.MCTS_SCORE);
-	Chart mctsSd = new Chart("MCTS SD Score", "MCTS SD Score", "Different Params", "Standard Deviation", Chart.Options.MCTS_SD);
+	Chart mctsScore = new Chart("MCTS Average Scores", "MCTS Average Scores", "Shield Bonus", "Average Score", Chart.Options.MCTS_SCORE);
+	Chart mctsSd = new Chart("MCTS SD Score", "MCTS SD Score", "Shield Bonus", "Standard Deviation", Chart.Options.MCTS_SD);
+	Chart mctsWins = new Chart("MCTS Win Percentage", "MCTS Win Percentage", "Shield Bonus", "Win Percentage", Chart.Options.MCTS_WINS);
 	for (int i = 0; i < numRuns; i++) {
-		MCNode.setParams(DEFAULT_WIN, DEFAULT_LOSE, DEFAULT_SHIELD, DEFAULT_DEPTH);
+		MCNode.setParams(DEFAULT_WIN, DEFAULT_LOSE, shields[i], DEFAULT_DEPTH);
 		ArcadeMachine.runGames(game, levels, 2, yenMc, null);
 //		ArcadeMachine.runOneGame(game, level1, visuals, yenMc,
 //				 recordActionsFile, seed, 0);
 		
-		mctsScore.updateDatasetForScoreMCTS("DEFAULT " + i);
-		mctsSd.updateDatasetForSdMCTS("DEFAULT " + i);
+		mctsScore.updateDatasetForScoreMCTS(Integer.toString(shields[i]));
+		mctsSd.updateDatasetForSdMCTS(Integer.toString(shields[i]));
+		mctsWins.updateDatasetForWinsMCTS(Integer.toString(shields[i]));
 		mctsScore.setSize( 560 , 367 );      
 		mctsScore.setVisible( true ); 
+		mctsWins.setSize( 560 , 367 );      
+		mctsWins.setVisible( true ); 
 		mctsSd.setSize( 560 , 367 );      
 		mctsSd.setVisible( true ); 
 	}
