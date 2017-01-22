@@ -13,6 +13,7 @@ import org.jfree.data.general.DefaultPieDataset;
 import org.jfree.data.general.PieDataset;
 import org.jfree.ui.ApplicationFrame;
 import org.jfree.ui.RefineryUtilities;
+
 import tools.StatSummary;
 
 public class Chart extends ApplicationFrame {	
@@ -20,10 +21,11 @@ public class Chart extends ApplicationFrame {
 	private DefaultCategoryDataset mctsScoresData = new DefaultCategoryDataset();
 	private DefaultCategoryDataset mctsSdData = new DefaultCategoryDataset();
 	private DefaultCategoryDataset mdpScoresData = new DefaultCategoryDataset();
+	private DefaultCategoryDataset mdpTimesData = new DefaultCategoryDataset();
 	private DefaultCategoryDataset mdpWinsData = new DefaultCategoryDataset();
 	
 	public enum Options {
-		MDP_SCORE, MDP_WINS, MCTS_SCORE, MCTS_SD, MCTS_WINS
+		MDP_SCORE, MDP_TIMES, MCTS_SCORE, MCTS_SD, MCTS_WINS
 	}
 	
 	public Chart(String title, String chartTitle, String xaxisTitle, String yaxisTitle, Options choice) {
@@ -36,6 +38,14 @@ public class Chart extends ApplicationFrame {
 
 		for (int i = 0; i < scores.size(); i++) {
 			this.mdpScoresData.addValue(scores.get(i), "Average Score" , "Run: " + (i+1)); 
+		}        
+	}
+	
+	public void updateDatasetForTimeMDP() {
+		ArrayList<Integer> times = Statistics.getTimes();
+
+		for (int i = 0; i < times.size(); i++) {
+			this.mdpTimesData.addValue(times.get(i), "Average TimeSteps" , "Run: " + (i+1)); 
 		}        
 	}
 
@@ -87,6 +97,9 @@ public class Chart extends ApplicationFrame {
 		switch(choice) {
 			case MDP_SCORE:
 				chart = createLineChart(this.mdpScoresData, title, xaxisTitle, yaxisTitle); 
+				break;
+			case MDP_TIMES:
+				chart = createLineChart(this.mdpTimesData, title, xaxisTitle, yaxisTitle); 
 				break;
 			case MCTS_SCORE:
 				chart = createBarChart(this.mctsScoresData, title, xaxisTitle, yaxisTitle); 

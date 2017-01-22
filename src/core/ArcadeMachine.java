@@ -602,10 +602,12 @@ public class ArcadeMachine {
 
 		StatSummary[] victories = new StatSummary[toPlay.getNoPlayers()];
 		StatSummary[] scores = new StatSummary[toPlay.getNoPlayers()];
+		StatSummary times = new StatSummary();
 		for (int i = 0; i < toPlay.getNoPlayers(); i++) {
 			victories[i] = new StatSummary();
 			scores[i] = new StatSummary();
 		}
+		
 		performance = new StatSummary();
 
 		for (String level_file : level_files) {
@@ -670,7 +672,7 @@ public class ArcadeMachine {
 				if ((no_players - disqCount) >= toPlay.no_players) {
 					score = toPlay.runGame(players, randomSeed);
 					//		     score = toPlay.playGame(players, randomSeed, false, 0);
-					toPlay.printResult();
+//					toPlay.printResult();
 				} else {
 					// Get the score for the result.
 					score = toPlay.handleResult();
@@ -692,6 +694,7 @@ public class ArcadeMachine {
 						int id = player.getPlayerID();
 						playerid = id;
 						scores[id].add(score[id]);
+						times.add(toPlay.getGameTick());
 						if (toPlay.getWinner(id) == Types.WINNER.PLAYER_WINS) {
 							scores[id].addWin();
 						}
@@ -699,6 +702,7 @@ public class ArcadeMachine {
 					}
 
 				Statistics.addScores(score[0]);
+				Statistics.addTimes(toPlay.getGameTick());
 				//		Statistics.addVictories(victories[0]);
 
 				// reset the game.
@@ -708,8 +712,8 @@ public class ArcadeMachine {
 			levelIdx++;
 		}
 
-		if (agentName.equals("yenMC.Agent") )
-			Statistics.addScoreStats(scores[0]);
+		Statistics.addScoreStats(scores[0]);
+		Statistics.addTimeStats(times);
 
 		String vict = "", sc = "";
 		for (int i = 0; i < toPlay.no_players; i++) {
