@@ -21,10 +21,6 @@ public class GridUtils {
 	
 	public GridUtils(StateObservation stateObs, int n) {
 		this.grid = getGridAroundPlayer(stateObs, n);
-		this.aliens = new boolean[4];
-		this.rockMissiles = new boolean[4];
-		this.laserMissiles = new boolean[4];
-		this.shields = new boolean[4];
 	}
 	
 	public Vector2d getIndexFromPosition(StateObservation stateObs) {

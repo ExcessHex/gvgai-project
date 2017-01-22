@@ -109,20 +109,33 @@ public class Test {
 //		 recordActionsFile, seed, 0);
 //	}
 	
-	// MDP
-	/*
-	Chart mdpScore = new Chart("MDP Scores over Time", "MDP Scores over Time", "Runs", "Score", Chart.Options.MDP_SCORE); 
-	Chart mdpTimes = new Chart("MDP Timesteps over Time", "MDP Timesteps over Time", "Runs", "Score", Chart.Options.MDP_TIMES); 
-	ArcadeMachine.runGames(game, levels, 5000, yen, null);
-	Agent.writeQVals();
-	mdpScore.updateDatasetForScoreMDP();
-	mdpScore.setSize( 560 , 367 );      
-	mdpScore.setVisible( true ); 
-	mdpTimes.updateDatasetForTimeMDP();
-	mdpTimes.setSize( 560 , 367 );      
-	mdpTimes.setVisible( true ); */
+	// MDP - Learning
+//	Chart mdpScore = new Chart("MDP Scores over Time", "MDP Scores over Time", "Runs", "Score", Chart.Options.MDP_SCORE); 
+//	Chart mdpTimes = new Chart("MDP Timesteps over Time", "MDP Timesteps over Time", "Runs", "Score", Chart.Options.MDP_TIMES); 
+//	ArcadeMachine.runGames(game, levels, 15000, yen, null);
+//	Agent.writeQVals();
+//	mdpScore.updateDatasetForScoreMDP();
+//	mdpScore.setSize( 560 , 367 );      
+//	mdpScore.setVisible( true ); 
+//	mdpTimes.updateDatasetForTimeMDP();
+//	mdpTimes.setSize( 560 , 367 );      
+//	mdpTimes.setVisible( true );
+
+	// MDP - Playing
+//	Agent.loadQVals();
+//	ArcadeMachine.runGames(game, levels, 500, yen, null);
+//	ArrayList<StatSummary> scoreStatsRandom = Statistics.getScoreStats();
+//	System.out.println("Mean Score: " + scoreStatsRandom.get(0).mean());
+//	System.out.println("Score SD: " + scoreStatsRandom.get(0).sd());
+//	System.out.println("Win %: " + scoreStatsRandom.get(0).winPercent());
+//	System.out.println("Mean TimeSteps: " + Statistics.getTimeStats().mean());
+//	System.out.println("SD TimeSteps: " + Statistics.getTimeStats().sd());
+//	Statistics.reset();
+	
+	
 	
 	// RANDOM
+	/*
 	ArcadeMachine.runGames(game, levels, 500, sampleRandomController, null);
 	ArrayList<StatSummary> scoreStatsRandom = Statistics.getScoreStats();
 	System.out.println("Mean Score: " + scoreStatsRandom.get(0).mean());
@@ -131,6 +144,7 @@ public class Test {
 	System.out.println("Mean TimeSteps: " + Statistics.getTimeStats().mean());
 	System.out.println("SD TimeSteps: " + Statistics.getTimeStats().sd());
 	Statistics.reset();
+	*/
 	
 	// MCTS
 	 /*
