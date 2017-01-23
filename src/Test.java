@@ -1,5 +1,6 @@
 import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.Random;
 
 import org.jfree.ui.RefineryUtilities;
@@ -11,9 +12,11 @@ import core.VGDLRegistry;
 import core.game.Game;
 import core.game.SLDescription;
 import tools.IO;
+import tools.StatSummary;
 import yen.*;
 import yenMC.Chart;
 import yenMC.MCNode;
+import yenMC.Statistics;
 
 /**
  * Created with IntelliJ IDEA. User: Diego Date: 04/10/13 Time: 16:29 This is a
@@ -106,15 +109,45 @@ public class Test {
 //		 recordActionsFile, seed, 0);
 //	}
 	
-	Chart mdpScore = new Chart("MDP Scores over Time", "MDP Scores over Time", "Runs", "Score", Chart.Options.MDP_SCORE); 
-	ArcadeMachine.runGames(game, levels, 2, yen, null);
-	Agent.writeQVals();
-	mdpScore.updateDatasetForScoreMDP();
-	mdpScore.setSize( 560 , 367 );      
-	mdpScore.setVisible( true ); 
+	// MDP - Learning
+//	Chart mdpScore = new Chart("MDP Scores over Time", "MDP Scores over Time", "Runs", "Score", Chart.Options.MDP_SCORE); 
+//	Chart mdpTimes = new Chart("MDP Timesteps over Time", "MDP Timesteps over Time", "Runs", "Score", Chart.Options.MDP_TIMES); 
+//	ArcadeMachine.runGames(game, levels, 15000, yen, null);
+//	Agent.writeQVals();
+//	mdpScore.updateDatasetForScoreMDP();
+//	mdpScore.setSize( 560 , 367 );      
+//	mdpScore.setVisible( true ); 
+//	mdpTimes.updateDatasetForTimeMDP();
+//	mdpTimes.setSize( 560 , 367 );      
+//	mdpTimes.setVisible( true );
+
+	// MDP - Playing
+//	Agent.loadQVals();
+//	ArcadeMachine.runGames(game, levels, 500, yen, null);
+//	ArrayList<StatSummary> scoreStatsRandom = Statistics.getScoreStats();
+//	System.out.println("Mean Score: " + scoreStatsRandom.get(0).mean());
+//	System.out.println("Score SD: " + scoreStatsRandom.get(0).sd());
+//	System.out.println("Win %: " + scoreStatsRandom.get(0).winPercent());
+//	System.out.println("Mean TimeSteps: " + Statistics.getTimeStats().mean());
+//	System.out.println("SD TimeSteps: " + Statistics.getTimeStats().sd());
+//	Statistics.reset();
 	
-//	ArcadeMachine.runGames(game, levels, 2, yenMc, null);
-	 
+	
+	
+	// RANDOM
+	/*
+	ArcadeMachine.runGames(game, levels, 500, sampleRandomController, null);
+	ArrayList<StatSummary> scoreStatsRandom = Statistics.getScoreStats();
+	System.out.println("Mean Score: " + scoreStatsRandom.get(0).mean());
+	System.out.println("Score SD: " + scoreStatsRandom.get(0).sd());
+	System.out.println("Win %: " + scoreStatsRandom.get(0).winPercent());
+	System.out.println("Mean TimeSteps: " + Statistics.getTimeStats().mean());
+	System.out.println("SD TimeSteps: " + Statistics.getTimeStats().sd());
+	Statistics.reset();
+	*/
+	
+	// MCTS
+	 /*
 	Chart mctsScore = new Chart("MCTS Average Scores", "MCTS Average Scores", "Shield Bonus", "Average Score", Chart.Options.MCTS_SCORE);
 	Chart mctsSd = new Chart("MCTS SD Score", "MCTS SD Score", "Shield Bonus", "Standard Deviation", Chart.Options.MCTS_SD);
 	Chart mctsWins = new Chart("MCTS Win Percentage", "MCTS Win Percentage", "Shield Bonus", "Win Percentage", Chart.Options.MCTS_WINS);
@@ -135,10 +168,7 @@ public class Test {
 		mctsSd.setVisible( true ); 
 	}
 	
-	
-	
-//	ArcadeMachine.runOneGame(game, level1, visuals, yen,
-//			 recordActionsFile, seed, 0);
+	*/
 	
 	// 3. This replays a game from an action file previously recorded
 	// String readActionsFile = recordActionsFile;

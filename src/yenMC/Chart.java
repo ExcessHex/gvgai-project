@@ -20,10 +20,9 @@ public class Chart extends ApplicationFrame {
 	private DefaultCategoryDataset mctsScoresData = new DefaultCategoryDataset();
 	private DefaultCategoryDataset mctsSdData = new DefaultCategoryDataset();
 	private DefaultCategoryDataset mdpScoresData = new DefaultCategoryDataset();
-	private DefaultCategoryDataset mdpWinsData = new DefaultCategoryDataset();
 	
 	public enum Options {
-		MDP_SCORE, MDP_WINS, MCTS_SCORE, MCTS_SD, MCTS_WINS
+		MDP_SCORE, MDP_WINS, MCTS_SCORE, MCTS_SD, MCTS_SHIELDS
 	}
 	
 	public Chart(String title, String chartTitle, String xaxisTitle, String yaxisTitle, Options choice) {
@@ -47,22 +46,12 @@ public class Chart extends ApplicationFrame {
 			this.mctsScoresData.addValue(mean, "Param " + param + " avg. score" , "Param " + param); 
 		}
 	}
-	
 	public void updateDatasetForSdMCTS(String param) {
 		ArrayList<StatSummary> statSumms = Statistics.getScoreStats();
 
 		for (int i = 0; i < statSumms.size(); i++) {
 			double sd = statSumms.get(i).sd();
 			this.mctsSdData.addValue(sd, "Param " + param + " sd" , "Param " + param); 
-		}
-	}
-	
-	public void updateDatasetForWinsMCTS(String param) {
-		ArrayList<StatSummary> statSumms = Statistics.getScoreStats();
-
-		for (int i = 0; i < statSumms.size(); i++) {
-			double sd = statSumms.get(i).winPercent();
-			this.mdpWinsData.addValue(sd, "Param " + param + " win %" , "Param " + param); 
 		}
 	}
 	
@@ -93,9 +82,6 @@ public class Chart extends ApplicationFrame {
 				break;
 			case MCTS_SD:
 				chart = createBarChart(this.mctsSdData, title, xaxisTitle, yaxisTitle);
-				break;
-			case MCTS_WINS:
-				chart = createBarChart(this.mdpWinsData, title, xaxisTitle, yaxisTitle);
 				break;
 			default:
 				break;

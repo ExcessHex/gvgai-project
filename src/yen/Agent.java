@@ -1,6 +1,9 @@
 package yen;
 
+import java.io.BufferedReader;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -29,7 +32,7 @@ public class Agent extends AbstractPlayer {
 		public static final int ALIEN_ID = 12;
 		
 		private static double greed = 0.9;
-		private static double rewardDiscount = 0.7;
+		private static double rewardDiscount = 0.9;
 		// gives the number of times an action was carried out in a state
 		private static HashMap<Integer, double[]> qValues;
 		private static HashMap<Integer, int[]> visited;
@@ -38,21 +41,19 @@ public class Agent extends AbstractPlayer {
 		private Random rand;
 		private double totalReward;
 		
-		private boolean learning = true;
+		private boolean learning =  false;
 		
 	    //Constructor. It must return in 1 second maximum.
 	    public Agent(StateObservation so, ElapsedCpuTimer elapsedTimer)
 	    {   
-	    	if (learning) {
-		    	// init qValues if it's the first run of the game.
-		    	if (qValues == null) {
-		    		visited = new HashMap<Integer, int[]>();
-		    		qValues = new HashMap<Integer, double[]>();
-		    	}
-		    	
-		    	rand = new Random();
-		    	totalReward = 0.0;
+	    	// init qValues if it's the first run of the game.
+	    	if (qValues == null) {
+	    		visited = new HashMap<Integer, int[]>();
+	    		qValues = new HashMap<Integer, double[]>();
 	    	}
+	    	
+	    	rand = new Random();
+	    	totalReward = 0.0;
 	    }
 
 	    //Act function. Called every game step, it must return an action in 40 ms maximum.
@@ -72,7 +73,7 @@ public class Agent extends AbstractPlayer {
 		    	return performAction(stateObs, Types.ACTIONS.values()[rand.nextInt(ACTION_SIZE)]);
 	    	}
 	    	
-	    	return performAction(stateObs, pickAction(stateObs.getAvailableActions(), currentState));
+	    	return pickAction(stateObs.getAvailableActions(), currentState);
 	    }
 	    
 	    private Types.ACTIONS performAction(StateObservation stateObs, Types.ACTIONS action) {	    	
@@ -145,7 +146,26 @@ public class Agent extends AbstractPlayer {
 	    }
 	    
 	    public static void loadQVals() {
-	    	
+    		qValues = new HashMap<Integer, double[]>();
+    		visited = new HashMap<Integer, int[]>();
+	    	try (BufferedReader br = new BufferedReader(new FileReader("q_values.txt"))) {
+	    	    String line;
+	    	    while ((line = br.readLine()) != null) {
+	    	       String[] splitLine = line.split(":");
+	    	       int state = Integer.parseInt(splitLine[0]);
+	    	       String[] qValuesString = splitLine[1].split(",");
+	    	       double[] qVals = new double[qValuesString.length];
+
+	    	       for (int i = 0; i < qValuesString.length; i++) {
+	    	    	   qVals[i] = Double.parseDouble(qValuesString[i]);
+	    	       }
+	    	       
+	    	       qValues.put(state, qVals);
+	    	    }
+	    	} catch (Exception e) {
+				System.out.println("Something went wrong!");
+				e.printStackTrace();
+			}
 	    }
 
 	    private double calculateReward(StateObservation curr, StateObservation next) {
