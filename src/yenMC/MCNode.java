@@ -39,46 +39,51 @@ public class MCNode {
 		children = new MCNode[actions.length];
 	}
 	
+	/**
+	 * Finds the next node to expand by traversing the tree from the current node.
+	 * If the node hasn't explored all its children, return it
+	 * @return The node
+	 */
 	MCNode selectNode() {
 		MCNode current = this;
 		boolean finished = false;
 		while (!finished) {
 			if (current.exploredAllChildren()) {
-				current = current.bestChild();
+				current = current.bestChild(); //Keep traversing
 			} else {
-				current = current.expandChild();
+				current = current.expandChild(); //Create child node
 				finished = true;
 			}
 		}
 		return current;
 	}
 	
+	/**
+	 * Function to return the best child node based on the qValue (also does random exploration)
+	 * @return the optimal node
+	 */
 	private MCNode bestChild() {
 		int index = -1;
 		double r = rng.nextDouble();
-		if (r > EPSILON) {
+		if (r > EPSILON) { // EXploitation
 			double bestValue = -100000;
 			ArrayList<Integer> bestIndices = new ArrayList<Integer>();
 			
 			for (int i = 0; i < children.length; i++) {
 				double value = children[i].qValue();
 				if (value > bestValue) {
-					index = i;
-					bestIndices = new ArrayList<Integer>();
+					bestValue = value; // update best value
+					bestIndices = new ArrayList<Integer>(); //Reset maximum
 					bestIndices.add(i);
 				} else if (value == bestValue) {
-					bestIndices.add(i);
+					bestIndices.add(i); //Add to list of best nodes
 				}
 			}
-			index = bestIndices.get( rng.nextInt(bestIndices.size()) );
+			index = bestIndices.get( rng.nextInt(bestIndices.size()) ); //randomly break any ties
 			
-		} else {
-			index = rng.nextInt(availableActions.length);
+		} else { //Exploration
+			index = rng.nextInt(availableActions.length); //Pick a random child
 		}
-		if (index < 0) {
-			System.out.println("Selection error!");
-		}
-		//System.out.println("Selecting child: " + index + " as best");
 		return children[index];
 	}
 	
@@ -90,25 +95,28 @@ public class MCNode {
 		return qValue/visitCount;
 	}
 	
+	/**
+	 * Create a new node for a random unexplored child
+	 * @return the new node
+	 */
 	private MCNode expandChild() {
 		int index = -1;
 		ArrayList<Integer> unexplored = new ArrayList<Integer>();
-		for (int i = 0; i< children.length; i++) {
-			if (children[i] == null) {
+		for (int i = 0; i< children.length; i++) { 
+			if (children[i] == null) { //Add all unexplored children
 				unexplored.add(i);
 			}
 		}
-		int randomIndex = rng.nextInt(unexplored.size());
-		index = unexplored.get(randomIndex);
+		int randomIndex = rng.nextInt(unexplored.size());//Create a random index
+		index = unexplored.get(randomIndex); //Select the random child
 		if (index < 0) {
 			System.out.println("Selection error!");
 		}
 		
 		StateObservation nextState = state.copy();
-		nextState.advance(availableActions[index]);
+		nextState.advance(availableActions[index]);//Advance the state for the child node
 		MCNode node = new MCNode(this, nextState, availableActions, rng);
 		children[index] = node;
-	//	System.out.println("Selecting child: " + index + " to expand");
 		return node;
 	}
 	
@@ -174,6 +182,13 @@ public class MCNode {
 		}
 	}
 	 
+	 /**
+	  * Set the agent params (static variables)
+	  * @param winBonus : The bonus value for winning
+	  * @param losePenalty : The value penalty for losing
+	  * @param shieldBonus : the multiplier to the shield level
+	  * @param maxDepth : The maximum depth for simulation
+	  */
 	 public static void setParams(int winBonus, int losePenalty, int shieldBonus, int maxDepth) {
 		 WIN_BONUS = winBonus;
 		 LOSE_PENALTY = losePenalty;

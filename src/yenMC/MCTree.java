@@ -23,12 +23,12 @@ public class MCTree {
 	}
 	
 	public void treeSearch(ElapsedCpuTimer timer) {
-		int minTime = 10;
+		int minTime = 10; 
 		do {
 			MCNode next = root.selectNode();
 			double value = next.simulate();
 			root.backPropagate(next, value);
-		} while (timer.remainingTimeMillis() > minTime);
+		} while (timer.remainingTimeMillis() > minTime); //Run while time remains
 	}
 	
 	public int bestAction() {
